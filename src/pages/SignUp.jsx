@@ -6,14 +6,20 @@ import {
     createUserWithEmailAndPassword,
     updateProfile
 } from "firebase/auth";
+
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase.config";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
+import { toast } from "react-toastify";
 
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
 
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        name: ""
+    });
 
     const { name, email, password } = formData;
 
@@ -50,7 +56,7 @@ function SignUp() {
 
             navigate("/");
         } catch (error) {
-            console.log(error);
+            toast.error("Something went wrong with registration");
         }
     };
 
@@ -66,7 +72,7 @@ function SignUp() {
                         type="text"
                         className="nameInput"
                         placeholder="Name"
-                        id="naem"
+                        id="name"
                         value={name}
                         onChange={handleChange}
                     />

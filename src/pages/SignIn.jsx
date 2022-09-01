@@ -1,21 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
+import { toast } from "react-toastify";
 
 function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({ email: "", password: "" });
     const { email, password } = formData;
-    const onChange = () => {};
-    const navigate = useNavigate();
 
-    // const onChange = (e) => {
-    //     // setFormData((prevState) => ({
-    //     //     ...prevState,
-    //     //     [e.target.id]: e.target.value
-    //     // }));
-    // };
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData((prevState) => ({
@@ -24,6 +19,39 @@ function SignIn() {
         }));
     };
 
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault();
+            const auth = getAuth();
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+
+            if (userCredential.user) {
+                navigate("/");
+            }
+        } catch (error) {
+            toast.error("Bad User Credentials");
+        }
+    };
+
+    // const handleSubmit2 = (e) => {
+    //     e.preventDefault();
+    //     const auth = getAuth();
+    //     signInWithEmailAndPassword(auth, email, password)
+    //         .then((userCredential) => {
+    //             const user = userCredential.user;
+    //             if (user) {
+    //                 navigate("/");
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    // };
+
     return (
         <>
             <div className="pageContainer">
@@ -31,7 +59,7 @@ function SignIn() {
                     <p className="pageHeader">Welcome back</p>
                 </header>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <input
                         type="email"
                         className="emailInput"
